@@ -28,15 +28,6 @@ Este é um aplicativo full-stack de encurtamento de URLs, com backend em Spring 
 
 ## Primeiros Passos
 
-### Pré-requisitos
-
-Certifique-se de ter instalado:
-
-- Docker e Docker Compose
-- Java 17+ (para desenvolvimento do backend fora do Docker)
-- Maven (para desenvolvimento do backend fora do Docker)
-- Node.js e npm/yarn (para desenvolvimento do frontend fora do Docker)
-
 ### Configuração e Execução com Docker Compose
 
 A forma mais fácil de rodar a aplicação é usando Docker Compose:
