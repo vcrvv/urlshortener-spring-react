@@ -31,7 +31,12 @@ public class UrlService {
         } catch (URISyntaxException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "URL inválida");
         }
-        String shortUrl = generateShortUrl();
+
+        String shortUrl;
+        do {
+            shortUrl = generateShortUrl();
+        } while (Boolean.TRUE.equals(redisTemplate.hasKey(URL_KEY_PREFIX + shortUrl)));
+
         Url url = new Url(
                 shortUrl,
                 urlRequest.longUrl(),
@@ -42,7 +47,7 @@ public class UrlService {
         return url;
     }
 
-    public Url getUrl(String shortUrl) {
+    public String getUrl(String shortUrl) {
         Url url = redisTemplate.opsForValue().get(URL_KEY_PREFIX + shortUrl);
         if (url == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "URL não encontrada ou expirada");
@@ -51,7 +56,7 @@ public class UrlService {
             redisTemplate.delete(URL_KEY_PREFIX + shortUrl);
             throw new ResponseStatusException(HttpStatus.GONE, "URL expirada");
         }
-        return url;
+        return url.getLongUrl();
     }
 
     private String generateShortUrl() {

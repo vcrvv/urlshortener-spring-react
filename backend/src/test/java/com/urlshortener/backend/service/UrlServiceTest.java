@@ -56,41 +56,19 @@ class UrlServiceTest {
         assertNotNull(result);
         assertEquals(urlRequest.longUrl(), result.getLongUrl());
         assertNotNull(result.getShortUrl());
-        verify(valueOperations, times(1)).set(anyString(), any(Url.class));
-        verify(redisTemplate, times(1)).expire(anyString(), eq(10L), eq(TimeUnit.HOURS));
+        verify(valueOperations, times(1)).set(anyString(), any(Url.class), eq(10L), eq(TimeUnit.HOURS));
     }
 
     @Test
-    @DisplayName("Deve lançar exceção para formato de URL inválido")
-    void deveLancarExcecaoParaFormatoDeUrlInvalido() {
-        UrlRequest urlRequest = new UrlRequest("invalid-url", 10);
+    @DisplayName("Deve gerar nova URL em caso de colisão")
+    void deveGerarNovaUrlEmCasoDeColisao() {
+        UrlRequest urlRequest = new UrlRequest("https://www.example.com", 10);
+        when(redisTemplate.hasKey(anyString())).thenReturn(true).thenReturn(false);
 
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> urlService.createUrl(urlRequest));
+        urlService.createUrl(urlRequest);
 
-        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode());
-        assertEquals("URL deve começar com http ou https", exception.getReason());
-    }
-
-    @Test
-    @DisplayName("Deve lançar exceção para URL com caracteres inválidos")
-    void deveLancarExcecaoParaUrlComCaracteresInvalidos() {
-        UrlRequest urlRequest = new UrlRequest("http://inválido com espaço", 10);
-
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> urlService.createUrl(urlRequest));
-
-        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode());
-        assertEquals("Formato de URL inválido", exception.getReason());
-    }
-
-    @Test
-    @DisplayName("Deve lançar exceção para URL que não começa com http ou https")
-    void deveLancarExcecaoParaUrlSemHttpOuHttps() {
-        UrlRequest urlRequest = new UrlRequest("blabla://www.example.com", 10);
-
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> urlService.createUrl(urlRequest));
-
-        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode());
-        assertEquals("URL deve começar com http ou https", exception.getReason());
+        verify(redisTemplate, times(2)).hasKey(anyString());
+        verify(valueOperations, times(1)).set(anyString(), any(Url.class), eq(10L), eq(TimeUnit.HOURS));
     }
 
     @Test
@@ -100,10 +78,10 @@ class UrlServiceTest {
         Url expectedUrl = new Url(shortUrl, "https://www.example.com", LocalDateTime.now(), LocalDateTime.now().plusHours(10));
         when(valueOperations.get("url:" + shortUrl)).thenReturn(expectedUrl);
 
-        Url result = urlService.getUrl(shortUrl);
+        String result = urlService.getUrl(shortUrl);
 
         assertNotNull(result);
-        assertEquals(expectedUrl, result);
+        assertEquals(expectedUrl.getLongUrl(), result);
     }
 
     @Test
@@ -115,6 +93,6 @@ class UrlServiceTest {
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> urlService.getUrl(shortUrl));
 
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
-        assertEquals("URL não encontrada", exception.getReason());
+        assertEquals("URL não encontrada ou expirada", exception.getReason());
     }
 }

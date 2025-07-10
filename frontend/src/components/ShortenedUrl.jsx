@@ -4,6 +4,8 @@ import Box from "@mui/material/Box";
 import Link from "@mui/material/Link";
 import Button from "@mui/material/Button";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import CheckIcon from '@mui/icons-material/Check';
+import ReplayIcon from '@mui/icons-material/Replay';
 
 export default function ShortenedUrl({ shortUrl, error }) {
   const [copied, setCopied] = useState(false);
@@ -12,7 +14,7 @@ export default function ShortenedUrl({ shortUrl, error }) {
     if (shortUrl) {
       await navigator.clipboard.writeText(shortUrl);
       setCopied(true);
-      setTimeout(() => setCopied(false), 1500);
+      setTimeout(() => setCopied(false), 2000);
     }
   };
 
@@ -23,29 +25,31 @@ export default function ShortenedUrl({ shortUrl, error }) {
       </Box>
     );
   }
+
   if (shortUrl) {
     return (
-      <Box mt={2} display="flex" alignItems="center" gap={1}>
-        <Alert severity="success" sx={{ flex: 1 }}>
-          Sua URL encurtada:{" "}
-          <Link href={shortUrl} target="_blank" rel="noopener">
-            {shortUrl}
-          </Link>
-        </Alert>
-        <Button
-          onClick={handleCopy}
-          variant="outlined"
-          color="primary"
-          size="small"
-          sx={{ minWidth: 0, px: 1 }}
-        >
-          <ContentCopyIcon fontSize="small" />
-        </Button>
-        {copied && (
-          <span style={{ color: "#4caf50", fontSize: 13 }}>Copiado!</span>
-        )}
+      <Box mt={2}>
+        <Box display="flex" alignItems="center" gap={1}>
+          <Alert severity="success" sx={{ flex: 1 }}>
+            Sua URL encurtada:{" "}
+            <Link href={shortUrl} target="_blank" rel="noopener">
+              {shortUrl}
+            </Link>
+          </Alert>
+          <Button
+            onClick={handleCopy}
+            variant={copied ? "contained" : "outlined"}
+            color="primary"
+            size="small"
+            startIcon={copied ? <CheckIcon /> : <ContentCopyIcon />}
+            className={copied ? 'copied-animation' : ''}
+          >
+            {copied ? "Copiado" : "Copiar"}
+          </Button>
+        </Box>
       </Box>
     );
   }
-  return null;
+
+  return <Box mt={2} sx={{ minHeight: '68px' }} />;
 }

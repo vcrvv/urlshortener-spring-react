@@ -28,7 +28,7 @@ export default function App() {
     setError(null);
     setShortUrl(null);
     try {
-      const response = await fetch("/shorten", {
+      const response = await fetch("/api/shorten", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ longUrl: url, expiresAt }),
@@ -38,7 +38,8 @@ export default function App() {
         setError(data.error || (data.errors && data.errors[0]) || "Erro desconhecido");
       } else {
         const data = await response.json();
-        setShortUrl("localhost:8080/" + data.shortUrl);
+        const backendUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
+        setShortUrl(`${backendUrl}/${data.shortUrl}`);
       }
     } catch (e) {
       setError("Erro ao conectar ao servidor");
