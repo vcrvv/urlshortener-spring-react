@@ -40,3 +40,19 @@
 .read-the-docs {
   color: #888;
 }
+
+.copied-animation {
+  animation: pulse 0.4s ease-in-out;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}

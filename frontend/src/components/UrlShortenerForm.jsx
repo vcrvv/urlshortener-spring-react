@@ -15,18 +15,18 @@ function isValidUrl(url) {
 
 export default function UrlShortenerForm({ onShorten, loading }) {
   const [url, setUrl] = useState("");
-  const [expiresAt, setExpiresAt] = useState(1);
-  const [inputError, setInputError] = useState(null);
+  const [expiresAt, setExpiresAt] = useState("");
+  const [error, setError] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setInputError(null);
+    setError(null);
     if (!isValidUrl(url)) {
-      setInputError("URL inválida");
+      setError("URL inválida");
       return;
     }
     if (expiresAt < 1) {
-      setInputError("Expiração mínima de 1 hora");
+      setError("Expiração mínima de 1 hora");
       return;
     }
     onShorten(url, expiresAt);
@@ -35,12 +35,14 @@ export default function UrlShortenerForm({ onShorten, loading }) {
   return (
     <Box component="form" onSubmit={handleSubmit} mt={2} display="flex" flexDirection="column" gap={2}>
       <TextField
-        label="URL para encurtar"
+        label="URL Original"
+        variant="outlined"
+        fullWidth
         value={url}
         onChange={(e) => setUrl(e.target.value)}
-        error={!!inputError}
-        helperText={inputError}
-        fullWidth
+        error={!!error}
+        helperText={error}
+        required
         disabled={loading}
       />
       <TextField

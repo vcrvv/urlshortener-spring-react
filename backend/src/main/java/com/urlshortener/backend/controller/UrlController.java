@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/")
 public class UrlController {
 
     private final UrlService urlService;
@@ -19,22 +18,18 @@ public class UrlController {
         this.urlService = urlService;
     }
 
-    @PostMapping("/shorten")
-    public ResponseEntity<Url> createUrl(@Valid @RequestBody UrlRequest urlRequest) {
+    @PostMapping("/api/shorten")
+    public ResponseEntity<Url> shortenUrl(@Valid @RequestBody UrlRequest urlRequest) {
         Url url = urlService.createUrl(urlRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(url);
     }
 
     @GetMapping("/{shortUrl}")
     public ResponseEntity<Void> redirect(@PathVariable String shortUrl) {
-        Url url = urlService.getUrl(shortUrl);
+        String longUrl = urlService.getUrl(shortUrl);
         HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(java.net.URI.create(url.getLongUrl()));
+        headers.setLocation(java.net.URI.create(longUrl));
         return new ResponseEntity<>(headers, HttpStatus.FOUND);
     }
 
-    @GetMapping("/")
-    public ResponseEntity<String> health() {
-        return ResponseEntity.ok("OK");
-    }
 }

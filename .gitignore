@@ -1,0 +1,44 @@
+# =========================================
+# Geral (IDE, OS, Logs)
+# =========================================
+.idea/
+.vscode/
+*.iml
+*.iws
+*.ipr
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.DS_Store
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# =========================================
+# Backend (Java / Spring Boot / Maven)
+# =========================================
+/backend/HELP.md
+/backend/target/
+/backend/build/
+/backend/dist/
+/backend/nbdist/
+/backend/nbproject/private/
+/backend/.nb-gradle/
+
+# Exceção para o Maven Wrapper, que DEVE ser versionado
+!/backend/.mvn/wrapper/maven-wrapper.jar
+
+# =========================================
+# Frontend (Node.js / Vite / React)
+# =========================================
+/frontend/node_modules/
+/frontend/dist/
+/frontend/dist-ssr/
+
+# Arquivos de ambiente locais
+/frontend/.env*
+!/frontend/.env.example

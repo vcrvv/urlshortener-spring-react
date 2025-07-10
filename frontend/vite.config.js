@@ -6,7 +6,14 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      '/shorten': 'http://localhost:8080'
+      '/api': {
+        target: 'http://localhost:8080',
+        changeOrigin: true
+      },
+      '/[^.]+$': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+      }
     }
   }
 })
