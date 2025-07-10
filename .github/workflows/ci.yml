@@ -81,7 +81,7 @@ jobs:
           echo "Listing running containers:"
           docker-compose ps
           echo -e "\nVerifying frontend is accessible..."
-          curl --fail http://localhost:3000
+          curl --fail http://localhost:80
           echo -e "\nFrontend is accessible!"
 
       - name: Tear down Docker stack
