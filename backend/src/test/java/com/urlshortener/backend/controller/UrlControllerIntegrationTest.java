@@ -12,6 +12,8 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
+import java.util.Objects;
+
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.testcontainers.containers.GenericContainer;
@@ -47,7 +49,7 @@ class UrlControllerIntegrationTest {
 
     @BeforeEach
     void setUp() {
-        rateLimitRedisTemplate.getConnectionFactory().getConnection().flushDb();
+        Objects.requireNonNull(rateLimitRedisTemplate.getConnectionFactory()).getConnection().serverCommands().flushDb();
     }
 
     @DynamicPropertySource
