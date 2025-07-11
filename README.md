@@ -26,22 +26,6 @@ Este é um aplicativo full-stack de encurtamento de URLs, com backend em Spring 
 
 - Redis
 
-## Decisões Arquiteturais
-
-Para construir esta aplicação, foram feitas algumas escolhas técnicas importantes que visam a robustez, escalabilidade e manutenibilidade do projeto:
-
-1.  **Por que Redis?**
-    -   O Redis foi escolhido como banco de dados principal por sua alta performance como um keystore in-memory. Para um encurtador de URLs, onde a velocidade de leitura é crítica para o redirecionamento, o Redis é ideal. Além disso, sua funcionalidade nativa de expiração de chaves (`TTL - Time To Live`) se encaixa perfeitamente no requisito de URLs que expiram, simplificando a lógica da aplicação.
-
-2.  **Roteamento com Prefixo `/r/`**
-    -   As URLs de redirecionamento utilizam o prefixo `/r/` (ex: `localhost/r/xyz123`). Essa abordagem evita conflitos de rota entre o frontend (uma Single Page Application em React) e os endpoints do backend. Garante que uma requisição de redirecionamento seja sempre direcionada ao backend, enquanto outras rotas (como `/`, `/sobre`, etc.) podem ser tratadas pelo frontend, uma prática padrão para aplicações full-stack modernas.
-
-3.  **Validação no DTO (Backend)**
-    -   A validação dos dados de entrada (como o formato da URL) é feita na camada de DTO (`Data Transfer Object`) com anotações (`@NotBlank`, `@Pattern`). Isso segue o princípio de "fail-fast", garantindo que dados inválidos sejam rejeitados na borda da aplicação (Controller), mantendo a camada de serviço limpa e focada exclusivamente na lógica de negócio.
-
-4.  **Spring Boot Actuator**
-    -   O projeto inclui o Spring Boot Actuator para expor endpoints de monitoramento (`/actuator/health`, `/actuator/info`). Isso demonstra conhecimento em práticas de observabilidade e preparação do sistema para um ambiente de produção, onde monitorar a saúde da aplicação é fundamental.
-
 ## Primeiros Passos
 
 ### Configuração e Execução com Docker Compose
@@ -56,59 +40,39 @@ A forma mais fácil de rodar a aplicação é usando Docker Compose:
     cd ..
     ```
 
-2. **Subir os Serviços:**
-    No diretório raiz do projeto, execute:
+2.  **Inicie os containers:**
     ```bash
     docker-compose up --build
     ```
-    Isso irá construir as imagens Docker do backend e frontend, e iniciar todos os serviços (backend, frontend, Redis).
 
-    O backend ficará disponível em `http://localhost:8080` e o frontend em `http://localhost:80`.
+3.  **Acesse a aplicação:**
+    -   O **Frontend** estará disponível em `http://localhost:5173`.
+    -   O **Backend** estará disponível em `http://localhost:8080`.
 
-### Executando o Backend Separadamente (Desenvolvimento)
+---
 
-1. **Iniciar o Redis:**
-    Se não for usar o Docker Compose para tudo, você pode iniciar o Redis separadamente (exemplo via Docker):
-    ```bash
-    docker run --name my-redis -p 6379:6379 -d redis/redis-stack-server
-    ```
+## 📖 Documentação da API (Swagger)
 
-2. **Rodar o Backend:**
-    No diretório `backend/`, execute:
-    ```bash
-    cd backend
-    ./mvnw spring-boot:run
-    ```
-    O backend ficará disponível em `http://localhost:8080`.
+Com a aplicação em execução, a documentação interativa da API, gerada pelo Swagger UI, pode ser acessada no seguinte endereço:
 
-### Executando o Frontend Separadamente (Desenvolvimento)
+-   **[http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)**
 
-1. **Instalar Dependências:**
-    No diretório `frontend/`, execute:
-    ```bash
-    cd frontend
-    npm install 
-    ```
+Lá você pode visualizar todos os endpoints, seus parâmetros, e testá-los diretamente pelo navegador.
 
-2. **Iniciar o Frontend:**
-    ```bash
-    npm run dev 
-    ```
-    O frontend ficará disponível em `http://localhost:3000`.
+---
 
-## Endpoints da API (Backend)
+## 🧪 Testes
 
--   `POST /shorten`: Cria uma nova URL curta.
-    -   Corpo da requisição: `{"longUrl": "sua-url-longa", "expiresAt": horas_para_expirar}`
--   `GET /r/{shortUrl}`: Redireciona para a URL original.
+O projeto possui uma suíte de testes robusta para garantir a qualidade do código.
 
-## Testes Unitários
-
-### Executando os Testes do Backend
-
-Para rodar os testes unitários do backend, no diretório `backend/` execute:
-
+### Backend
+Para rodar os testes do backend (unitários e de integração), navegue até a pasta `backend` e execute:
 ```bash
-cd backend
 ./mvnw test
-``` 
+```
+
+### Frontend
+Para rodar os testes do frontend, navegue até a pasta `frontend` e execute:
+```bash
+npm test
+```

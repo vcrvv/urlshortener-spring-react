@@ -95,4 +95,29 @@ class UrlServiceTest {
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
         assertEquals("URL não encontrada ou expirada", exception.getReason());
     }
+
+    @Test
+    @DisplayName("Deve lançar exceção GONE para URL expirada")
+    void deveLancarExcecaoGoneParaUrlExpirada() {
+        String shortUrl = "expiredUrl";
+        Url expired = new Url(shortUrl, "https://www.example.com", LocalDateTime.now().minusHours(2), LocalDateTime.now().minusHours(1));
+        when(valueOperations.get("url:" + shortUrl)).thenReturn(expired);
+
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> urlService.getUrl(shortUrl));
+
+        assertEquals(HttpStatus.GONE, exception.getStatusCode());
+        assertEquals("URL expirada", exception.getReason());
+        verify(redisTemplate, times(1)).delete("url:" + shortUrl);
+    }
+
+    @Test
+    @DisplayName("Deve lançar exceção BAD_REQUEST para URL inválida")
+    void deveLancarExcecaoBadRequestParaUrlInvalida() {
+        UrlRequest urlRequest = new UrlRequest("not-a-valid-url", 10);
+
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> urlService.createUrl(urlRequest));
+
+        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode());
+        assertEquals("URL inválida", exception.getReason());
+    }
 }
