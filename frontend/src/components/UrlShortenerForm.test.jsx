@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi } from 'vitest';
 import UrlShortenerForm from './UrlShortenerForm';
@@ -33,7 +33,6 @@ describe('UrlShortenerForm', () => {
         const handleShorten = vi.fn();
         render(<UrlShortenerForm onShorten={handleShorten} loading={false} />);
 
-        const urlInput = screen.getByLabelText(/URL Original/i);
         const submitButton = screen.getByRole('button', { name: /Encurtar/i });
 
         await userEvent.click(submitButton);

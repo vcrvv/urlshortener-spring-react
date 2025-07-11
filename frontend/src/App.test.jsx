@@ -4,11 +4,9 @@ import userEvent from '@testing-library/user-event';
 import { vi } from 'vitest';
 import App from './App';
 
-global.fetch = vi.fn();
-
 describe('App Component', () => {
   beforeEach(() => {
-    fetch.mockClear();
+    vi.spyOn(global, 'fetch').mockClear();
   });
 
   it('deve renderizar o título e o formulário', () => {
