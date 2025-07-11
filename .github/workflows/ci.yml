@@ -43,6 +43,14 @@ jobs:
         working-directory: ./frontend
         run: npm install
 
+      - name: Run Lint
+        working-directory: ./frontend
+        run: npm run lint
+
+      - name: Run Tests
+        working-directory: ./frontend
+        run: npm run test
+
       - name: Build Production Artifacts
         working-directory: ./frontend
         run: npm run build

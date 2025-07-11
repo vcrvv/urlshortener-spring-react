@@ -1,7 +1,8 @@
 package com.urlshortener.backend.service;
 
-import java.net.URI;
+import java.net.MalformedURLException;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.UUID;
@@ -27,8 +28,8 @@ public class UrlService {
 
     public Url createUrl(UrlRequest urlRequest) {
         try {
-            new URI(urlRequest.longUrl());
-        } catch (URISyntaxException e) {
+            new URL(urlRequest.longUrl()).toURI();
+        } catch (MalformedURLException | URISyntaxException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "URL inválida");
         }
 
