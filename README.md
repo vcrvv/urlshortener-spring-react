@@ -1,4 +1,4 @@
-# URL Shortener - Encurtador de URL Full-stacks
+# URL Shortener - Encurtador de URL Full-stack
 
 Este é um projeto de um encurtador de URLs completo, desenvolvido com **Spring Boot** para o backend e **React** para o frontend. A aplicação permite aos usuários transformar URLs longas em links curtos, fáceis de compartilhar.
 
